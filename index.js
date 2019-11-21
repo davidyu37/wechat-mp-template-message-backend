@@ -34,7 +34,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/login', async (req, res) => {
@@ -48,53 +47,35 @@ app.post('/save-formId', async (req, res) => {
 })
 
 app.use('/send-message', async (req, res) => {
-  /*
-  {
-    "form_id": "1d16026cadf5fef48705f8dc416120dc",
-    "touser": 'oIEcc5CTl4nRK1hORoSghj19N-GA', // openID
-    "template_id":'epDAg_fFYdvsVD5qDLS2jpxXU45wfNWME36q1HMjgTg',
-    "data": {
-      keyword1: {
-        value: 'Product Name',
-      },
-      keyword2: {
-        value: 'Product Description',
-      },
-      keyword3: {
-        value: '10/10/2018',
-      },
-      keyword4: {
-        value: '10/10/2018',
-      },
-    },
-  }
-  */
   try {
     // Get access token
    const { access_token } = await wx.jssdk.getAccessToken();
   //  console.log(access_token);
    // Get template id either hardcoded or making a request to https://api.weixin.qq.com/cgi-bin/wxopen/template/list?access_token=ACCESS_TOKEN
-   const template_id = "rOCU8DIXCI1FBIxhg8zpUGyqnYhqT2obhj70Hn8VK2M";
+   const template_id = "7vpdow8iyZ_m8py6-xNmPKbaGUoGDc5KmKbHKVD0myY";
+   
    // Send message
    const message = {
-      form_id: req.body.form_id,
-      // Recipient's OpenID
-      touser: req.body.touser,
-      template_id,
-      data: {
-        keyword1: {
-          value: '10/10/2018',
-        },
-        keyword2: {
-          value: 'Product Name',
-        },
-        keyword3: {
-          value: 'Delivery Platform',
-        },
-      }
-    };
-
-   const response = await axios.post(`https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=${access_token}`, message);
+    "touser": "ovzv50GD60pPnc-EwOIj41dMjetg",  
+    "template_id": template_id, 
+    "page": "index",          
+    "data": {
+      "name1": {
+          "value": "Class Name"
+      }, 
+      "time2": {
+          "value": "2015年01月05日"
+      }, 
+      "thing3": {
+          "value": "TIT创意园"
+      } , 
+      "thing4": {
+          "value": "comment"
+      } 
+    }
+  };
+    
+   const response = await axios.post(`https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${access_token}`, message);
 
     res.status(200).json(response.data);
  } catch (e) {
@@ -119,4 +100,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+const port = process.env.PORT || '3000'
+
+app.listen(port, () => console.log(`listening on port ${port}!`))
